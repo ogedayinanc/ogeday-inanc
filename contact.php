@@ -6,7 +6,7 @@
 	define("__TO__", "info@ogedayinanc.com");
 
 	#Message subject
-	define("__SUBJECT__", "examples.com = From:");
+	define("__SUBJECT__", "ogedayinanc.com = From:");
 
 	#Success message
 	define('__SUCCESS_MESSAGE__', "Your message has been sent. Thank you!");
