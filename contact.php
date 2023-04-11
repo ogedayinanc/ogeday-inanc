@@ -1,94 +1,102 @@
-<?php
+<?php 
 
+	/* ==========================  Define variables ========================== */
 
+	#Your e-mail address
+	define("__TO__", "info@ogedayinanc.com");
 
-if(!$_POST) exit;
+	#Message subject
+	define("__SUBJECT__", "examples.com = From:");
 
+	#Success message
+	define('__SUCCESS_MESSAGE__', "Your message has been sent. Thank you!");
 
+	#Error message 
+	define('__ERROR_MESSAGE__', "Error, your message hasn't been sent");
 
-function tommus_email_validate($email) { return filter_var($email, FILTER_VALIDATE_EMAIL) && preg_match('/@.+\./', $email); }
+	#Messege when one or more fields are empty
+	define('__MESSAGE_EMPTY_FILDS__', "Please fill out  all fields");
 
+	/* ========================  End Define variables ======================== */
 
-$name = $_POST['name']; $email = $_POST['email']; $phone = $_POST['phone']; $comments = $_POST['comments'];
+	//Send mail function
+	function send_mail($to,$subject,$message,$headers){
+		if(@mail($to,$subject,$message,$headers)){
+			echo json_encode(array('info' => 'success', 'msg' => __SUCCESS_MESSAGE__));
+		} else {
+			echo json_encode(array('info' => 'error', 'msg' => __ERROR_MESSAGE__));
+		}
+	}
 
+	//Check e-mail validation
+	function check_email($email){
+		if(!@eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email)){
+			return false;
+		} else {
+			return true;
+		}
+	}
 
+	//Get post data
+	if(isset($_POST['name']) and isset($_POST['mail']) and isset($_POST['comment'])){
+		$name 	 = $_POST['name'];
+		$mail 	 = $_POST['mail'];
+		$website  = $_POST['website'];
+		$subject  = $_POST['subject'];
+		$comment = $_POST['comment'];
 
-if(trim($name) == '') {
+		if($name == '') {
+			echo json_encode(array('info' => 'error', 'msg' => "Please enter your name."));
+			exit();
+		} else if($mail == '' or check_email($mail) == false){
+			echo json_encode(array('info' => 'error', 'msg' => "Please enter valid e-mail."));
+			exit();
+		} else if($comment == ''){
+			echo json_encode(array('info' => 'error', 'msg' => "Please enter your message."));
+			exit();
+		} else {
+			//Send Mail
+			$to = __TO__;
+			$subject = __SUBJECT__ . ' ' . $name;
+			$message = '
+			<html>
+			<head>
+			  <title>Mail from '. $name .'</title>
+			</head>
+			<body>
+			  <table style="width: 500px; font-family: arial; font-size: 14px;" border="1">
+				<tr style="height: 32px;">
+				  <th align="right" style="width:150px; padding-right:5px;">Name:</th>
+				  <td align="left" style="padding-left:5px; line-height: 20px;">'. $name .'</td>
+				</tr>
+				<tr style="height: 32px;">
+				  <th align="right" style="width:150px; padding-right:5px;">E-mail:</th>
+				  <td align="left" style="padding-left:5px; line-height: 20px;">'. $mail .'</td>
+				</tr>
+				<tr style="height: 32px;">
+				  <th align="right" style="width:150px; padding-right:5px;">Website:</th>
+				  <td align="left" style="padding-left:5px; line-height: 20px;">'. $website .'</td>
+				</tr>
+				<tr style="height: 32px;">
+				  <th align="right" style="width:150px; padding-right:5px;">Subject:</th>
+				  <td align="left" style="padding-left:5px; line-height: 20px;">'. $subject .'</td>
+				</tr>
+				<tr style="height: 32px;">
+				  <th align="right" style="width:150px; padding-right:5px;">Comment:</th>
+				  <td align="left" style="padding-left:5px; line-height: 20px;">'. $comment .'</td>
+				</tr>
+			  </table>
+			</body>
+			</html>
+			';
 
-	exit('<div class="error_message">Please enter your name.</div>');
+			$headers  = 'MIME-Version: 1.0' . "\r\n";
+			$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+			$headers .= 'From: ' . $mail . "\r\n";
 
-} else if(trim($name) == 'Name *') {
-	
-	exit('<div class="error_message">Please enter your name.</div>');
-
-} else if(trim($name) == 'Name') {
-
-	exit('<div class="error_message">Please enter your name.</div>');
-
-} else if(trim($email) == 'Email *') {
-	
-	exit('<div class="error_message">Please enter your email address.</div>');
-
-} else if(trim($email) == 'Email') {
-
-	exit('<div class="error_message">Please enter your email address.</div>');
-
-} else if(!tommus_email_validate($email)) {
-
-	exit('<div class="error_message">You have entered an invalid e-mail address.</div>');
-
-} else if(trim($comments) == 'Your Message *') {
-
-	exit('<div class="error_message">Please enter your message.</div>');
-	
-} else if(trim($comments) == 'Your Message') {
-
-	exit('<div class="error_message">Please enter your message.</div>');
-
-} else if(trim($comments) == '') {
-
-	exit('<div class="error_message">Please enter your message.</div>');
-	
-} else if( strpos($comments, 'href') !== false ) {
-
-	exit('<div class="error_message">Please leave links as plain text.</div>');
-	
-} else if( strpos($comments, '[url') !== false ) {
-
-	exit('<div class="error_message">Please leave links as plain text.</div>');
-
-} if(get_magic_quotes_gpc()) { $comments = stripslashes($comments); }
-
-
-
-$address = 'info@ogedayinanc.com';
-
-
-
-$e_subject = 'You\'ve been contacted by ' . $name . '.';
-
-$e_body = "You have been contacted by $name from your contact form, their additional message is as follows." . "\r\n" . "\r\n";
-
-$e_content = "\"$comments\"" . "\r\n" . "\r\n";
-
-$e_reply = "You can contact $name via email, $email (or by phone if supplied: $phone)";
-
-
-
-$msg = wordwrap( $e_body . $e_content . $e_reply, 70 );
-
-
-
-$headers = "From: $email" . "\r\n";
-
-$headers .= "Reply-To: $email" . "\r\n";
-
-$headers .= "MIME-Version: 1.0" . "\r\n";
-
-$headers .= "Content-type: text/plain; charset=utf-8" . "\r\n";
-
-$headers .= "Content-Transfer-Encoding: quoted-printable" . "\r\n";
-
-
-
-if(mail($address, $e_subject, $msg, $headers)) { echo "<fieldset><div id='success_page'><p>Thank you $name, your message has been submitted to us.</p></div></fieldset>"; }
+			send_mail($to,$subject,$message,$headers);
+		}
+	} else {
+		echo json_encode(array('info' => 'error', 'msg' => __MESSAGE_EMPTY_FILDS__));
+	}
+ ?>

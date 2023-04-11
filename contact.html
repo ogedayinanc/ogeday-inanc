@@ -172,19 +172,19 @@
                                 <div id="reponse_msg_15656906441579882087" class="contact_form_response">
                                     <ul></ul>
                                 </div>
-                                <form id="contact_form_15656906441579882087" class="contact_form_wrapper" method="post" action="contact.php">
-                                    <input type="hidden" id="action" name="action" value="grandportfolio_contact_mailer" />
-                                    <label for="your_name">Name *</label>
-                                    <input id="your_name" name="your_name" type="text" class="required_field" placeholder="Name *" />
-                                    <label for="email">Email *</label>
-                                    <input id="email" name="email" type="text" class="required_field email" placeholder="Email *" />
-                                    <label for="message">Message *</label>
-                                    <textarea id="message" name="message" rows="7" cols="10" class="required_field" style="width:98%;" placeholder="Message *"></textarea>
+                                <form id="contact-form" class="contact_form_wrapper">
+                                    <label for="name">Name *</label>
+                                    <input id="name" name="name" type="text" class="required_field" placeholder="Name *" />
+                                    <label for="mail">Email *</label>
+                                    <input id="mail" name="mail" type="text" class="required_field email" placeholder="Email *" />
+                                    <label for="comment">Message *</label>
+                                    <textarea id="comment" name="comment" rows="7" cols="10" class="required_field" style="width:98%;" placeholder="Message *"></textarea>
                                     <br/>
                                     <br/>
                                     <div class="contact_submit_wrapper">
-                                        <input id="contact_submit_btn15656906441579882087" name="contact_submit_btn15656906441579882087" type="submit" class="solidbg" value="Send" />
+                                        <input id="submit_contact" type="submit" class="solidbg" value="Send" />
                                     </div>
+                                    <div id="msg" class="message"></div>
                                 </form>
                             </div>
                             <div class="sidebar_wrapper left_sidebar">
